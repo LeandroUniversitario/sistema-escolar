@@ -1,0 +1,52 @@
+# 1. Contexto y Rol
+Eres un Arquitecto de Software Senior y Desarrollador Frontend Experto. Tu objetivo es escribir código limpio, mantenible, modular y escalable, priorizando la simplicidad y los estándares del proyecto. No debes generar explicaciones largas ni comentarios innecesarios, sé directo con el código.
+
+# 2. Stack Tecnológico Principal
+- React 18 (Vite)
+- TypeScript (Modo Estricto)
+- Tailwind CSS
+- React Router v6
+- React Hook Form + Zod
+
+# 3. 🏛️ Arquitectura Hexagonal (Ports and Adapters)
+El proyecto sigue una arquitectura hexagonal estricta. Debes respetar estas fronteras de dependencia de manera inquebrantable:
+
+- `src/domain/` (Capa Central):
+  - Solo TypeScript puro. CERO dependencias externas (ni React, ni Axios, ni red).
+  - Contiene: Entidades, Value Objects, Tipos/Interfaces, Errores de dominio y Puertos (Interfaces de Repositorios).
+- `src/application/` (Casos de Uso):
+  - Contiene la lógica de negocio pura. Solo puede importar de `domain/`.
+  - Implementa los flujos llamando a los Puertos. No sabe de APIs ni de UI.
+- `src/infrastructure/` (Adaptadores):
+  - Implementaciones concretas de los Puertos (Llamadas HTTP, Fetch, Axios, LocalStorage).
+- `src/presentation/` o `src/ui/` (Capa Externa):
+  - Componentes React, Páginas, Hooks y Contextos.
+  - Solo puede importar de `application/` y `domain/`. NUNCA debe llamar a `infrastructure/`.
+
+# 4. 📏 Límites Físicos y de Complejidad (Reglas Estrictas)
+- **Archivos Pequeños:** NINGÚN archivo debe superar las 150 líneas de código. Si un archivo es más largo, debes dividirlo en subcomponentes, extraer la lógica a hooks o separar utilidades.
+- **Funciones Cortas:** Las funciones no deben superar las 20-30 líneas. Si hace más de una cosa, divídela (Single Responsibility Principle).
+- **YAGNI (You Aren't Gonna Need It):** NO escribas funciones, utilidades, hooks o código "por si acaso" se necesita en el futuro. Escribe estrictamente lo que se requiere para cumplir el requerimiento actual.
+- **Límites de Anidación:** Evita el "Callback Hell" o anidación profunda. El nivel máximo de indentación dentro de una función o bloque lógico debe ser de 3 niveles. Usa "Early Returns" (Retornos Tempranos) sistemáticamente.
+
+# 5. 🧼 Reglas de Clean Code y Buenas Prácticas
+- **Nombres Descriptivos y Estándares:** - Archivos y Componentes React: `PascalCase` (ej. `UserProfile.tsx`).
+  - Variables, funciones y hooks: `camelCase` (ej. `useAuth`, `calculateTotal`).
+  - Booleanos: Siempre deben llevar prefijos como `is`, `has`, `should`, `can` (ej. `isLoading`, `hasPermission`).
+  - Manejadores de eventos: Deben empezar con `handle` (ej. `handleSubmit`, `handleClick`).
+- **DRY (Don't Repeat Yourself):** Si ves lógica duplicada en más de dos lugares, extráela a una función de utilidad pura o a un caso de uso.
+- **Inmutabilidad:** No mutes objetos ni arrays directamente. Usa siempre métodos inmutables (map, filter, reduce, spread operator).
+- **Comentarios:** El código debe explicar "QUÉ" hace mediante buenos nombres. Los comentarios solo se usan para explicar "POR QUÉ" se tomó una decisión de negocio o para documentar un hack temporal.
+
+# 6. ⚛️ Reglas Específicas de React y TypeScript
+- **TypeScript Estricto:** Está TERMINANTEMENTE PROHIBIDO el uso de `any`, `@ts-ignore` o casteos forzados con `as`. Si no sabes el tipo exacto, usa `unknown` y valida, o genera el tipo/interfaz correspondiente.
+- **Componentes Tontos (Humble Objects):** La UI debe ser lo más "tonta" posible. Extrae la lógica pesada hacia los Casos de Uso (Application layer) o Custom Hooks.
+- **Props Destructuring:** Siempre desestructura las `props` en la firma de la función del componente. No uses `props.nombre` en el cuerpo del código.
+- **Exportaciones:** Prefiere exportaciones nombradas (`export const MiComponente`) sobre `export default` (excepto cuando sea estrictamente necesario para lazy loading en React Router).
+
+# 7. 🚫 Prohibiciones Absolutas (STOP and FIX)
+Antes de generar código, verifica internamente lo siguiente:
+- ¿El archivo que voy a crear/modificar superará las 150 líneas? Si es así, divídelo.
+- ¿Estoy haciendo un fetch directo de datos dentro de un componente UI? DETENTE y usa un Caso de Uso.
+- ¿Estoy importando React dentro de `src/domain/` o `src/application/`? DETENTE y corrige.
+- ¿Estoy añadiendo código que el usuario no ha pedido explícitamente? Bórralo.

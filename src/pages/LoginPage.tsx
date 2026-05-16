@@ -123,7 +123,7 @@ export const LoginPage: FC = () => {
         navigate(ROLE_ROUTES[result.user.rol], { replace: true });
       }, 600);
     } else {
-      setServerError(result.message);
+      setServerError(result.error.message);
     }
   };
 

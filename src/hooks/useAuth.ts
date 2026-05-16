@@ -12,7 +12,7 @@
 
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import type { AuthContextValue } from '../types/auth.types';
+import type { AuthContextValue } from '../context/AuthContext';
 
 /**
  * Hook para acceder al estado y acciones de autenticación.

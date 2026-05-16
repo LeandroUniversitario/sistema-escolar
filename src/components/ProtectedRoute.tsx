@@ -19,7 +19,7 @@ import type { FC } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
-import type { UserRole, RoleRouteMap } from '../types/auth.types';
+import type { UserRole, RoleRouteMap } from '../domain/auth';
 
 // ─── Mapa centralizado de rutas por rol ──────────────────────────────────────
 

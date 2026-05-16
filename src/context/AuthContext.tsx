@@ -1,13 +1,19 @@
 /**
  * @file AuthContext.tsx
- * @description Contexto global de autenticación.
+ * @description Contexto global de autenticación (Capa de Presentación).
  *
  * Patrón: React Context API + useReducer (Flux-like).
  *
- * Por qué useReducer y no useState:
- *  - El estado de auth tiene múltiples sub-valores relacionados.
- *  - Las transiciones son predecibles y auditables por acción.
- *  - Facilita añadir middleware de logging o persistencia en el futuro.
+ * Arquitectura Hexagonal — Composition Root:
+ *   Este archivo actúa como "raíz de composición", donde se ensamblan
+ *   las dependencias concretas. Es el ÚNICO lugar que conoce tanto
+ *   la capa de aplicación (LoginUseCase) como la de infraestructura
+ *   (MockAuthRepository). El resto de la UI es ignorante de ambas.
+ *
+ * Para cambiar de Mock a HTTP en producción:
+ *   1. Crea `HttpAuthRepository` en `infrastructure/auth/`.
+ *   2. Reemplaza `MockAuthRepository` por `HttpAuthRepository` aquí.
+ *   3. Cero cambios en LoginUseCase, LoginPage, o cualquier otro componente.
  *
  * @module AuthContext
  */
@@ -20,14 +26,54 @@ import {
   type FC,
 } from 'react';
 
-import type {
-  AuthState,
-  AuthAction,
-  AuthContextValue,
-  LoginCredentials,
-  AuthResult,
-} from '../types/auth.types';
-import { loginUser } from '../services/authService';
+// ─── Importaciones de la Arquitectura Hexagonal ──────────────────────────────
+
+// Dominio: tipos puros (entidades, value objects, result)
+import type { AuthUser, LoginCredentials, AuthResult } from '../domain/auth';
+
+// Aplicación: caso de uso (lógica de negocio)
+import { LoginUseCase } from '../application/auth';
+
+// Infraestructura: adaptador concreto (implementación del puerto)
+import { MockAuthRepository } from '../infrastructure/auth';
+
+// ─── Composition Root ────────────────────────────────────────────────────────
+// Ensamblaje de dependencias a nivel de módulo (singleton).
+// El repositorio se inyecta al caso de uso por constructor (DIP).
+
+const authRepository = new MockAuthRepository();
+const loginUseCase = new LoginUseCase(authRepository);
+
+// ─── Tipos de Presentación ───────────────────────────────────────────────────
+// Estos tipos son específicos de React (estado del reducer, acciones).
+// No pertenecen al dominio porque dependen del ciclo de vida de la UI.
+
+/**
+ * Estado completo de autenticación gestionado por useReducer.
+ */
+export interface AuthState {
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+/**
+ * Acciones discriminadas para el reducer de autenticación.
+ */
+export type AuthAction =
+  | { type: 'AUTH_LOADING' }
+  | { type: 'AUTH_SUCCESS'; payload: AuthUser }
+  | { type: 'AUTH_FAILURE' }
+  | { type: 'AUTH_LOGOUT' };
+
+/**
+ * Contrato público del AuthContext expuesto a los componentes consumidores.
+ */
+export interface AuthContextValue {
+  state: AuthState;
+  login: (credentials: LoginCredentials) => Promise<AuthResult>;
+  logout: () => void;
+}
 
 // ─── Estado inicial ───────────────────────────────────────────────────────────
 
@@ -84,6 +130,10 @@ interface AuthProviderProps {
  * Proveedor del contexto de autenticación.
  * Envuelve la aplicación en App.tsx para exponer `state`, `login` y `logout`.
  *
+ * Flujo de `login`:
+ *   UI (LoginPage) → AuthContext.login() → LoginUseCase.execute()
+ *     → IAuthRepository.login() → MockAuthRepository (adaptador)
+ *
  * @param children - Árbol de componentes que pueden consumir el contexto.
  */
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
@@ -91,13 +141,14 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
   /**
    * Intenta autenticar al usuario con las credenciales provistas.
-   * Gestiona el ciclo completo: loading → éxito/error → actualización de estado.
+   * Delega al caso de uso `LoginUseCase` (capa de aplicación),
+   * que a su vez delega al repositorio a través del puerto.
    */
   const login = useCallback(
     async (credentials: LoginCredentials): Promise<AuthResult> => {
       dispatch({ type: 'AUTH_LOADING' });
 
-      const result = await loginUser(credentials);
+      const result = await loginUseCase.execute(credentials);
 
       if (result.success) {
         dispatch({ type: 'AUTH_SUCCESS', payload: result.user });

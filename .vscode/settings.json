@@ -1,0 +1,21 @@
+{
+  // ─── File Nesting ──────────────────────────────────────────────────────────
+  // Agrupa visualmente archivos de configuración bajo un archivo "padre"
+  // en el explorador de VS Code. NO mueve ni modifica archivos, solo
+  // los colapsa para mantener la raíz del proyecto limpia y ordenada.
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    // package.json agrupa todo lo relacionado a npm/node
+    "package.json": "package-lock.json, .npmrc, .nvmrc",
+
+    // tsconfig.json agrupa las variantes de TypeScript
+    "tsconfig.json": "tsconfig.*.json",
+
+    // vite.config.ts agrupa PostCSS y Tailwind (build pipeline)
+    "vite.config.ts": "postcss.config.js, tailwind.config.js",
+
+    // .gitignore agrupa archivos de control de versiones
+    ".gitignore": ".gitattributes, .editorconfig"
+  }
+}
