@@ -1,0 +1,50 @@
+/* ============================================================
+   COMPONENTES REUTILIZABLES
+   Demo credentials, role badges, dashboard layout
+   ============================================================ */
+
+@layer components {
+
+  /* ── Demo credentials ───────────────────────────────────── */
+  .demo-section {
+    @apply mt-6 pt-5 border-t border-neutral-200/70;
+  }
+
+  .demo-label {
+    @apply text-[10px] font-semibold text-neutral-400 uppercase tracking-[0.15em] text-center mb-2.5;
+  }
+
+  .demo-grid {
+    @apply grid grid-cols-2 gap-2;
+  }
+
+  .demo-card {
+    @apply bg-white border border-neutral-100 rounded-xl p-3;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* ── Badges de rol ──────────────────────────────────────── */
+  .role-badge {
+    @apply inline-flex items-center px-2 py-0.5
+           font-bold rounded-full uppercase tracking-widest;
+  }
+
+  .role-badge-admin {
+    @apply bg-brand-100 text-brand-700;
+  }
+
+  .role-badge-user {
+    @apply bg-neutral-100 text-neutral-600;
+  }
+
+  /* ── Dashboard ──────────────────────────────────────────── */
+  .dashboard-wrapper {
+    @apply min-h-screen flex flex-col;
+    background: linear-gradient(160deg, #eef3fb 0%, #f8f9fb 60%, #d5e2f5 100%);
+    overflow: auto;
+  }
+
+  .dashboard-topbar {
+    @apply bg-auth-gradient shadow-card-lg;
+  }
+}

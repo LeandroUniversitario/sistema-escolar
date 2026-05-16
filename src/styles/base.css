@@ -1,0 +1,53 @@
+/* ============================================================
+   ESTILOS BASE GLOBALES
+   Reset, tipografía, scrollbar
+   ============================================================ */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-sans text-neutral-900;
+  }
+
+  #root {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Scrollbar personalizada */
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-300 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-500;
+  }
+}
+
+@layer utilities {
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #1e4db7, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}

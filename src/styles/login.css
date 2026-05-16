@@ -1,0 +1,148 @@
+/* LOGIN — Split screen layout */
+@layer components {
+
+  /* Contenedor raíz — ocupa exactamente 100vh */
+  .login-root {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+
+  /* Panel izquierdo (branding) */
+  .login-left {
+    @apply relative hidden lg:flex flex-col justify-between;
+    width: 42%;
+    flex-shrink: 0;
+    background: linear-gradient(145deg, #0f2660 0%, #1a3a8c 45%, #2155c4 100%);
+    padding: 2.75rem 3rem;
+    overflow: hidden;
+  }
+
+  /* Orbes decorativos */
+  .login-orb {
+    @apply absolute rounded-full pointer-events-none;
+  }
+  .login-orb-1 {
+    width: 320px; height: 320px;
+    top: -80px; right: -80px;
+    background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+  }
+  .login-orb-2 {
+    width: 250px; height: 250px;
+    bottom: -60px; left: -60px;
+    background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  }
+  .login-orb-3 {
+    width: 160px; height: 160px;
+    top: 45%; left: 55%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  }
+
+  /* Bloque de logo + nombre */
+  .login-brand {
+    @apply flex flex-col gap-3 z-10;
+  }
+
+  .login-logo-ring {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center mb-1;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  }
+
+  .login-brand-sub {
+    @apply text-blue-200/80 text-xs font-semibold uppercase tracking-[0.18em];
+  }
+
+  .login-brand-title {
+    @apply text-white font-bold leading-none whitespace-nowrap;
+    font-size: 2rem;
+    letter-spacing: -0.025em;
+  }
+
+  .login-brand-location {
+    @apply text-blue-300/60 text-sm font-medium;
+  }
+
+  /* Feature pills */
+  .login-features {
+    @apply flex flex-col gap-2.5 z-10;
+  }
+
+  .login-features-label {
+    @apply text-white/40 text-[10px] font-semibold uppercase tracking-[0.15em] mb-1 ml-2;
+  }
+
+  .feature-pill {
+    @apply flex items-center gap-2.5 text-sm text-white/80 font-medium;
+    padding: 0.6rem 1.1rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    width: fit-content;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+  }
+
+  .feature-pill:hover {
+    background: rgba(255,255,255,0.15);
+  }
+
+  .feature-pill svg {
+    @apply text-blue-300 flex-shrink-0;
+  }
+
+  /* Badge de seguridad */
+  .login-secure-badge {
+    @apply flex items-center gap-2 text-xs text-white/50 z-10;
+  }
+
+  /* Panel derecho (formulario) */
+  .login-right {
+    @apply flex flex-col justify-center items-center relative;
+    flex: 1;
+    background: #f8fafd;
+    padding: 2rem 1.5rem;
+    overflow: hidden;
+  }
+
+  /* Patrón de fondo sutil */
+  .login-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 80% 10%, rgba(37,99,190,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 10% 90%, rgba(37,99,190,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .login-form-wrap {
+    @apply relative w-full z-10;
+    max-width: 380px;
+  }
+
+  .login-form-header {
+    @apply mb-7;
+  }
+
+  .login-form-title {
+    @apply text-neutral-900 font-bold;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+  }
+
+  .login-form-subtitle {
+    @apply text-neutral-500 text-sm mt-1;
+  }
+
+  .login-form {
+    @apply flex flex-col gap-4;
+  }
+
+  .login-footer {
+    @apply absolute bottom-4 text-center text-xs text-neutral-400;
+  }
+}
